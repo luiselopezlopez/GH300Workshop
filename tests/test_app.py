@@ -50,6 +50,10 @@ def test_float_result():
     assert calculate(1, "/", 3) == pytest.approx(1 / 3)
 
 
+def test_square():
+    assert calculate(5, "sqr", 0) == 25
+
+
 # --- Integration tests for Flask routes ---
 
 def test_index_route(client):
@@ -80,6 +84,12 @@ def test_calculate_division(client):
     response = client.post("/calculate", json={"num1": 20, "operator": "/", "num2": 4})
     assert response.status_code == 200
     assert response.get_json()["result"] == 5
+
+
+def test_calculate_square(client):
+    response = client.post("/calculate", json={"num1": 9, "operator": "sqr"})
+    assert response.status_code == 200
+    assert response.get_json()["result"] == 81
 
 
 def test_calculate_division_by_zero(client):

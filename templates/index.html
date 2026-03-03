@@ -134,7 +134,7 @@
         <div class="buttons">
             <button class="btn-clear" onclick="clearAll()">C</button>
             <button class="btn-operator" onclick="toggleSign()">+/-</button>
-            <button class="btn-operator" onclick="percentage()">%</button>
+            <button class="btn-operator" onclick="square()">x²</button>
             <button class="btn-operator" id="op-/" onclick="setOperator('/')">÷</button>
 
             <button class="btn-number" onclick="appendDigit('7')">7</button>
@@ -219,9 +219,31 @@
             }
         }
 
-        function percentage() {
-            currentInput = String(parseFloat(currentInput) / 100);
-            updateDisplay(currentInput);
+        function square() {
+            const squaredInput = currentInput;
+            fetch('/calculate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    num1: parseFloat(currentInput),
+                    operator: 'sqr'
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.error) {
+                    showError(data.error);
+                    shouldReset = true;
+                } else {
+                    currentInput = String(data.result);
+                    operator = null;
+                    previousInput = '';
+                    highlightOperator(null);
+                    updateDisplay(currentInput, squaredInput + '²');
+                    shouldReset = true;
+                }
+            })
+            .catch(() => showError('Error'));
         }
 
         function setOperator(op) {

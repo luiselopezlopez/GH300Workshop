@@ -15,6 +15,8 @@ def calculate(num1, operator, num2):
         if num2 == 0:
             raise ValueError("Cannot divide by zero")
         return num1 / num2
+    elif operator == "sqr":
+        return num1 * num1
     else:
         raise ValueError(f"Unknown operator: {operator}")
 
@@ -29,8 +31,8 @@ def calculate_route():
     data = request.get_json()
     try:
         num1 = float(data["num1"])
-        num2 = float(data["num2"])
         operator = data["operator"]
+        num2 = float(data["num2"]) if operator != "sqr" else 0
         result = calculate(num1, operator, num2)
         # Return integer when result has no fractional part
         if result == int(result):
